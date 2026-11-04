@@ -1,0 +1,397 @@
+// context/AuthContext.jsx
+
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
+
+import axios from "../utils/axiosInstance";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { showToast } from "../utils/showToast.jsx"
+import defaultUserLogo from "../assets/Images/profile.png";
+import { setAnalyticsUser } from "../analytics";
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
+
+  /* ================= STATE ================= */
+
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [allUsers, setAllUsers] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState("login");
+
+  const openAuthModal = useCallback((tab = "login") => {
+    setAuthModalTab(tab);
+    setAuthModalOpen(true);
+  }, []);
+
+  const closeAuthModal = useCallback(() => {
+    setAuthModalOpen(false);
+  }, []);
+
+  /* ================= FORMAT USER ================= */
+
+  const formatUser = useCallback((userData) => {
+    if (!userData) return null;
+
+    return {
+      _id: userData._id,
+      name: userData.name,
+      email: userData.email,
+      isAdmin: userData.isAdmin,
+      address: userData.address || null,
+      avatar: userData.avatar || defaultUserLogo,
+    };
+  }, []);
+
+  /* ================= FETCH USER ================= */
+
+  const fetchUser = useCallback(async () => {
+    try {
+      const { data } = await axios.get("/auth/me");
+      const formatted = formatUser(data.user);
+      setUser(formatted);
+      if (formatted) setAnalyticsUser(formatted);
+    } catch {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  }, [formatUser]);
+
+  /* ================= INITIAL AUTH CHECK ================= */
+
+  useEffect(() => {
+    fetchUser(); // cookie auto sent
+  }, [fetchUser]);
+
+  /* ================= HEARTBEAT FOR ACTIVE STATUS ================= */
+  useEffect(() => {
+    if (!user) return;
+
+    const ping = () => {
+      axios.get("/auth/ping").catch(() => {});
+    };
+
+    // Ping immediately when user is loaded/active
+    ping();
+
+    // Regular heartbeat every 45 seconds
+    const interval = setInterval(ping, 45 * 1000);
+
+    // Ping when window regains focus or tab becomes visible
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        ping();
+      }
+    };
+
+    window.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("focus", ping);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("focus", ping);
+    };
+  }, [user]);
+
+  /* ================= AUTO LOGOUT ON USER BLOCKED ================= */
+  useEffect(() => {
+    const handleUserBlocked = (e) => {
+      const message =
+        e.detail ||
+        "Your account has been blocked by an administrator. You have been logged out.";
+      localStorage.removeItem("token");
+      setUser(null);
+      Swal.fire({
+        icon: "error",
+        title: "Account Blocked",
+        text: message,
+        confirmButtonColor: "#FF5722",
+      }).then(() => {
+        navigate("/");
+      });
+    };
+
+    window.addEventListener("user-blocked", handleUserBlocked);
+    return () => window.removeEventListener("user-blocked", handleUserBlocked);
+  }, [navigate]);
+
+  /* ================= AUTH ================= */
+
+  const signup = async (name, email, password) => {
+    try {
+      setLoading(true);
+
+      const { data } = await axios.post("/auth/register", {
+        name,
+        email,
+        password,
+      });
+
+      localStorage.setItem("token", data.token);
+
+      const formatted = formatUser(data.user);
+      setUser(formatted);
+      if (formatted) setAnalyticsUser(formatted);
+      setAuthModalOpen(false);
+      showToast("Account created successfully!", "success");
+      return data;
+    } catch (error) {
+      const msg =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Signup failed";
+      showToast(msg, "error");
+      throw new Error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const login = async (email, password) => {
+    try {
+      setLoading(true);
+
+      const { data } = await axios.post("/auth/login", {
+        email,
+        password,
+      });
+      localStorage.setItem("token", data.token);
+
+      // ✅ cookie already set by backend
+      const formatted = formatUser(data.user);
+      setUser(formatted);
+      if (formatted) setAnalyticsUser(formatted);
+      setAuthModalOpen(false);
+      showToast("Logged in successfully!", "success");
+      return data;
+    } catch (error) {
+      const msg =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Login failed";
+      showToast(msg, "error");
+      throw new Error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logout = useCallback(async () => {
+    try {
+      await axios.post("/auth/logout"); // clears cookie & notifies server
+    } catch {
+      showToast("Logout failed", "error");
+    } finally {
+      localStorage.removeItem("token");
+      setUser(null);
+      navigate("/");
+    }
+  }, [navigate]);
+
+  /* ================= PROFILE ================= */
+
+  const updateProfile = async (formData) => {
+    try {
+      const { data } = await axios.put("/auth/update-profile", formData);
+      Swal.fire({
+        title: data.message,
+        icon: "success",
+      });
+      setUser((prev) => ({
+        ...prev,
+        ...formatUser(data.user),
+      }));
+    } catch {
+      showToast("Profile update failed","error");
+    }
+  };
+
+  /* ================= AVATAR ================= */
+
+  const updateAvatar = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      const { data } = await axios.put("/auth/update-avatar", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      Swal.fire({
+        title: data.message,
+        icon: "success",
+      });
+
+      setUser((prev) => ({
+        ...prev,
+        avatar: data.avatar,
+      }));
+    } catch {
+      showToast("Avatar update failed", "error");
+    }
+  };
+
+  const deleteAvatar = async () => {
+    try {
+      await axios.delete("/auth/delete-avatar");
+
+      showToast("Avatar removed", "success");
+
+      setUser((prev) => ({
+        ...prev,
+        avatar: defaultUserLogo,
+      }));
+    } catch {
+      showToast("Delete avatar failed", "error");
+    }
+  };
+
+  /* ================= ADDRESS ================= */
+
+  const saveAddress = async (addressData) => {
+    try {
+      const { data } = await axios.put("/auth/save-address", addressData);
+
+      if (data.success) {
+        setUser((prev) => ({
+          ...prev,
+          address: data.address,
+        }));
+        return data.address;
+      }
+    } catch {
+      showToast("Address save failed", "error");
+    }
+  };
+
+  const deleteAddress = async () => {
+    try {
+      const { data } = await axios.delete("/auth/delete-address");
+
+      if (data.success) {
+        setUser((prev) => ({
+          ...prev,
+          address: null,
+        }));
+      }
+    } catch {
+      showToast("Delete address failed", "error");
+    }
+  };
+
+  
+  // 🔹 Admin actions
+  const fetchAllUsers = async (showLoading = true) => {
+    if (!user?.isAdmin) return;
+    try {
+      if (showLoading) setLoadingUsers(true);
+      const { data } = await axios.get("/admin/users"); // admin endpoint
+      if (data.success) setAllUsers(data.users);
+    } catch (error) {
+      showToast(error.response?.data?.message || "Failed to fetch users", "error");
+    } finally {
+      if (showLoading) setLoadingUsers(false);
+    }
+  };
+
+  const deleteUser = async (id) => {
+    try {
+      await axios.delete(`/admin/users/${id}`);
+      showToast("User deleted successfully", "success");
+      setAllUsers((prev) => prev.filter((u) => u._id !== id));
+    } catch (error) {
+      showToast(error.response?.data?.message || "Failed to delete user", "error");
+    }
+  };
+
+  const toggleUserStatus = async (id, currentStatus) => {
+    try {
+      const { data } = await axios.put(`/admin/users/${id}/status`, {
+        status: currentStatus === "Active" ? "Blocked" : "Active",
+      });
+      showToast("User status updated", "success");
+      setAllUsers((prev) =>
+        prev.map((u) => (u._id === id ? { ...u, status: data.status } : u))
+      );
+    } catch (error) {
+      showToast(error.response?.data?.message || "Failed to update status", "error");
+    }
+  };
+
+  const updateUser = async (id, updatedFields) => {
+    try {
+      const { data } = await axios.put(`/admin/users/${id}`, updatedFields);
+      showToast("User updated successfully", "success");
+      setAllUsers((prev) =>
+        prev.map((u) => (u._id === id ? { ...u, ...data.user } : u))
+      );
+    } catch (error) {
+      showToast(error.response?.data?.message || "Failed to update user", "error");
+    }
+  };
+
+  /* ================= CONTEXT VALUE ================= */
+
+  const value = useMemo(
+    () => ({
+      user,
+      loading,
+      signup,
+      login,
+      logout,
+      fetchUser,
+      updateProfile,
+      updateAvatar,
+      deleteAvatar,
+      saveAddress,
+      deleteAddress,
+      isAuthenticated: !!user,
+      allUsers,
+      loadingUsers,
+      fetchAllUsers,
+      deleteUser,
+      toggleUserStatus,
+      updateUser,
+      authModalOpen,
+      authModalTab,
+      openAuthModal,
+      closeAuthModal,
+      setAuthModalTab,
+    }),
+    [
+      user,
+      loading,
+      logout,
+      fetchUser,
+      allUsers,
+      loadingUsers,
+      authModalOpen,
+      authModalTab,
+      openAuthModal,
+      closeAuthModal,
+    ]
+  );
+
+  return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => useContext(AuthContext);
