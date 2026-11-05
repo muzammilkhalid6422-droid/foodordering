@@ -266,7 +266,7 @@ const MenuPage = () => {
                       : "bg-gray-100 border-gray-200 text-gray-700"
                   }`}
                 >
-                  Max: <strong className="text-primary-light dark:text-primary-dark">₹{priceLimit}</strong>
+                  Max: <strong className="text-primary-light dark:text-primary-dark">PKR {priceLimit}</strong>
                 </span>
               )}
 
@@ -523,7 +523,7 @@ const MenuPage = () => {
                   <span className="text-gray-500 dark:text-neutral-400 uppercase tracking-wider font-semibold">
                     Max Price
                   </span>
-                  <span className="font-bold text-primary-light dark:text-primary-dark">₹{priceLimit}</span>
+                  <span className="font-bold text-primary-light dark:text-primary-dark">PKR {priceLimit}</span>
                 </div>
                 <input
                   type="range"
@@ -535,9 +535,9 @@ const MenuPage = () => {
                   className="w-full accent-primary-light cursor-pointer"
                 />
                 <div className="flex justify-between text-[11px] text-gray-500 dark:text-neutral-400 mt-1">
-                  <span>₹50</span>
-                  <span>₹500</span>
-                  <span>₹1000</span>
+                  <span>PKR 50</span>
+                  <span>PKR 500</span>
+                  <span>PKR 1000</span>
                 </div>
               </div>
 
@@ -681,7 +681,7 @@ const MenuPage = () => {
 
                 <div className="pt-2 flex items-center justify-between">
                   <div className="text-2xl font-bold text-primary-light dark:text-primary-dark">
-                    ₹{Number(quickViewItem.price).toLocaleString("en-IN")}
+                    PKR {Number(quickViewItem.price).toLocaleString("en-PK")}
                   </div>
 
                   <div className="flex items-center gap-2">

@@ -383,7 +383,7 @@ export default function Hero() {
                 ) : (
                   <>
                     <ShoppingBag className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-                    <span>Order {currentDish.shortName} • ₹{currentDish.price}</span>
+                    <span>Order {currentDish.shortName} • PKR {currentDish.price}</span>
                   </>
                 )}
               </button>
@@ -537,13 +537,13 @@ export default function Hero() {
                         </div>
                         <div className="flex items-baseline gap-1.5 mt-0.5">
                           <span className="text-sm font-black text-neutral-950 dark:text-white">
-                            ₹{currentDish.price}
+                            PKR {currentDish.price}
                           </span>
                           <span className="text-[11px] text-neutral-400 line-through">
-                            ₹{currentDish.originalPrice}
+                            PKR {currentDish.originalPrice}
                           </span>
                           <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                            Save ₹{currentDish.originalPrice - currentDish.price}
+                            Save PKR {currentDish.originalPrice - currentDish.price}
                           </span>
                         </div>
                       </div>
@@ -642,7 +642,7 @@ export default function Hero() {
                       {dish.category}
                     </p>
                     <p className="text-[10px] sm:text-[11px] text-neutral-500 dark:text-neutral-400 font-medium truncate">
-                      ₹{dish.price} • {dish.prepTime}
+                      PKR {dish.price} • {dish.prepTime}
                     </p>
                   </div>
                 </button>

@@ -548,7 +548,7 @@ export default function AdminFoodPage() {
                       {/* Price & Stock Counter */}
                       <div className="flex items-baseline justify-between mt-2">
                         <div className="text-lg font-black text-neutral-900 dark:text-white">
-                          ₹{item.price}
+                          PKR {item.price}
                         </div>
 
                         <span
@@ -644,7 +644,7 @@ export default function AdminFoodPage() {
 
                         {/* Price */}
                         <td className="py-3 px-4 font-black text-neutral-900 dark:text-white">
-                          ₹{item.price}
+                          PKR {item.price}
                         </td>
 
                         {/* Stock */}

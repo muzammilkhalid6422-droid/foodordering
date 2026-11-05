@@ -3,7 +3,7 @@ import User from "../models/User.js";
 // @desc Fetch all users (Admin only)
 export const getAllUsers = async (req, res) => {
     try {
-        if (!req.user.isAdmin) {
+        if (!req.user.isSuperAdmin) {
             return res.status(403).json({ message: "Access denied" });
         }
 
@@ -45,20 +45,21 @@ export const getAllUsers = async (req, res) => {
 // @desc Update user (name, email, role) - Admin
 export const updateUser = async (req, res) => {
     try {
-        if (!req.user.isAdmin) return res.status(403).json({ message: "Access denied" });
+        if (!req.user.isSuperAdmin) return res.status(403).json({ message: "Access denied" });
 
         const { id } = req.params;
         const { name, email, isAdmin } = req.body;
 
         const user = await User.findById(id);
         if (!user) return res.status(404).json({ message: "User not found" });
+        if (user.isSuperAdmin || String(user._id) === String(req.user._id)) return res.status(403).json({ message: "Super Admin and your own account cannot be changed here" });
 
         user.name = name || user.name;
         user.email = email || user.email;
         if (typeof isAdmin === "boolean") user.isAdmin = isAdmin;
 
         const updatedUser = await user.save();
-        res.json({ success: true, message: "User updated", user: updatedUser });
+        res.json({ success: true, message: "User updated", user: { _id: updatedUser._id, name: updatedUser.name, email: updatedUser.email, isAdmin: updatedUser.isAdmin, isSuperAdmin: updatedUser.isSuperAdmin } });
     } catch (error) {
         console.error("Error in updateUser:", error);
         res.status(500).json({ message: "Server error" });
@@ -68,13 +69,14 @@ export const updateUser = async (req, res) => {
 // @desc Toggle user status (Active/Blocked) - Admin
 export const toggleUserStatus = async (req, res) => {
     try {
-        if (!req.user.isAdmin) return res.status(403).json({ message: "Access denied" });
+        if (!req.user.isSuperAdmin) return res.status(403).json({ message: "Access denied" });
 
         const { id } = req.params;
         const { status } = req.body;
 
         const user = await User.findById(id);
         if (!user) return res.status(404).json({ message: "User not found" });
+        if (user.isSuperAdmin || String(user._id) === String(req.user._id)) return res.status(403).json({ message: "Super Admin and your own account cannot be changed here" });
 
         user.status = status || (user.status === "Active" ? "Blocked" : "Active");
         if (user.status === "Blocked") {
@@ -93,11 +95,12 @@ export const toggleUserStatus = async (req, res) => {
 // @desc Delete user (Admin only)
 export const deleteUser = async (req, res) => {
     try {
-        if (!req.user.isAdmin) return res.status(403).json({ message: "Access denied" });
+        if (!req.user.isSuperAdmin) return res.status(403).json({ message: "Access denied" });
 
         const { id } = req.params;
         const user = await User.findById(id);
         if (!user) return res.status(404).json({ message: "User not found" });
+        if (user.isSuperAdmin || String(user._id) === String(req.user._id)) return res.status(403).json({ message: "Super Admin and your own account cannot be changed here" });
 
         await user.deleteOne();
         res.json({ success: true, message: "User deleted successfully" });

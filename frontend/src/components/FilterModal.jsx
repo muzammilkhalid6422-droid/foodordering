@@ -36,7 +36,7 @@
 
 //           {/* Price range */}
 //           <div>
-//             <h3 className="font-semibold mb-2">Price Range (₹)</h3>
+//             <h3 className="font-semibold mb-2">Price Range (PKR )</h3>
 //             <div className="flex gap-2">
 //               <input
 //                 type="number"

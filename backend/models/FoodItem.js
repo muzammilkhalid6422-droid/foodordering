@@ -8,8 +8,9 @@ const foodSchema = new mongoose.Schema(
       required: true,
       enum: ["Pizza", "Burger", "Chinese", "Chicken", "Biryani"],
     },
-    price: { type: Number, required: true },
+    price: { type: Number, required: true, min: 0 },
     image: { type: String, required: true },
+    imagePublicId: String,
     rating: {
       type: Number,
       default: 0,

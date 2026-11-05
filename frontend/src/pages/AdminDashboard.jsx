@@ -1,134 +1,43 @@
+﻿import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import {
-  ClipboardList,
-  Users,
-  Utensils,
-  LayoutDashboard,
-  ShieldAlert,
-} from "lucide-react";
-import { motion } from "framer-motion";
-
+import api from "../utils/axiosInstance";
+const money = n => `PKR ${Number(n || 0).toLocaleString("en-PK")}`;
+const date = n => n ? new Date(n).toLocaleString() : "—";
+const statuses = ["Confirmed", "Preparing", "Out for Delivery", "Delivered", "Cancelled"];
+const btn = "rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50";
 export default function AdminDashboard() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  if (!user?.isAdmin) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen bg-background-light dark:bg-background-dark text-center">
-        <ShieldAlert size={52} className="text-red-500 mb-4" />
-        <h2 className="text-2xl font-semibold text-red-500">
-          Access Denied
-        </h2>
-        <p className="text-sm text-text-light/60 dark:text-text-dark/60 mt-2">
-          Admin privileges required
-        </p>
-      </div>
-    );
-  }
-
-  const showComingSoon = (isDark) => {
-  Swal.fire({
-  title: "Coming Soon",
-  text: "This feature is under development.",
-  icon: "info",
-  showClass: {
-    popup: "animate__animated animate__fadeInUp",
-  },
-  hideClass: {
-    popup: "animate__animated animate__fadeOutDown",
-  },
-  confirmButtonText: "Got it",
-  background: isDark ? "#1E1E1E" : "#FFFFFF",
-  color: isDark ? "#FFFFFF" : "#121212",
-  confirmButtonColor: "#FF5722",
-});
-
-};
-
-  const cards = [
-    {
-      title: "Manage Food Items",
-      description: "Create, edit and organize menu items.",
-      icon: Utensils,
-      action: () => navigate("/food-management"),
-    },
-    {
-      title: "Manage Users",
-      description: "View and control user accounts.",
-      icon: Users,
-      action: () => navigate("/users"),
-    },
-    {
-      title: "All Orders",
-      description: "Track, update and fulfill orders.",
-      icon: ClipboardList,
-      action: () => showComingSoon(
-  document.documentElement.classList.contains("dark")
-),
-    },
-  ];
-
-  return (
-    <div className="min-h-screen px-6 py-10 max-w-7xl mx-auto">
-      <motion.h1
-        initial={{ opacity: 0, y: -25 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="mb-12 flex items-center justify-center gap-3 text-3xl md:text-4xl font-bold text-primary"
-      >
-        <LayoutDashboard size={34} />
-        Admin Dashboard
-      </motion.h1>
-
-      {/* ---------- CARDS ---------- */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {cards.map((card, index) => {
-          const Icon = card.icon;
-
-          return (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.12, duration: 0.5 }}
-              whileHover={{ y: -6 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={card.action}
-              className="
-                relative cursor-pointer rounded-3xl p-6
-                bg-white/70 dark:bg-[#1E1E1E]/80
-                backdrop-blur-xl
-                border border-black/5 dark:border-white/10
-                shadow-[0_10px_30px_rgba(0,0,0,0.08)]
-                dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)]
-                group transition-all
-              "
-            >
-              {/* Gradient Ring */}
-              <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-primary/20 via-transparent to-secondary/20 pointer-events-none" />
-
-              {/* Icon */}
-              <div className="relative z-10 flex justify-center mb-5">
-                <div className="p-4 rounded-2xl bg-primary/10 text-primary">
-                  <Icon size={36} />
-                </div>
-              </div>
-
-              {/* Title */}
-              <h2 className="relative z-10 text-lg font-semibold text-center mb-2 group-hover:text-primary transition">
-                {card.title}
-              </h2>
-
-              {/* Description */}
-              <p className="relative z-10 text-sm text-center text-text-light/70 dark:text-text-dark/70">
-                {card.description}
-              </p>
-            </motion.div>
-          );
-        })}
-      </div>
-    </div>
-  );
+ const { user } = useAuth();
+ const [data, setData] = useState(null), [tab, setTab] = useState("users"), [query, setQuery] = useState("");
+ const [error, setError] = useState(""), [loading, setLoading] = useState(false), [busy, setBusy] = useState(false);
+ const load = useCallback(async () => {
+  if (!user?.isSuperAdmin) return;
+  setLoading(true); setError("");
+  try {setData((await api.get("/admin/overview")).data);} catch(e) {setError(e.response?.data?.message || "Unable to load records. Please retry.");} finally {setLoading(false);}
+ }, [user?.isSuperAdmin]);
+ useEffect(() => {load();}, [load]);
+ async function change(url, payload, method="put") {
+  setBusy(true); setError("");
+  try {await api[method](url, payload); await load();} catch(e) {setError(e.response?.data?.message || "Update failed");} finally {setBusy(false);}
+ }
+ if (!user?.isAdmin) return <p className="p-10">Admin access required.</p>;
+ const rows=(data?.[tab] || []).filter(r => JSON.stringify(r).toLowerCase().includes(query.toLowerCase()));
+ const headers=tab === "users" ? ["User", "Role", "Status", "Joined", "Access controls"] : tab === "products" ? ["Product", "Category", "Price", "Stock", "Manage"] : tab === "orders" ? ["Order / Customer", "Items", "Total / Payment", "Delivery", "Status"] : ["Reference / Guest", "Contact", "Date / Time", "Guests / Area", "Status"];
+ const cell="px-4 py-4 align-top text-sm";
+ return <main className="mx-auto min-h-screen max-w-7xl px-4 py-10 text-gray-900 dark:text-gray-100">
+  <header className="mb-8 flex flex-wrap items-center justify-between gap-5"><div><p className="text-sm font-semibold uppercase tracking-widest text-orange-600">Yumigo • Administration</p><h1 className="mt-2 text-3xl font-bold">{user.isSuperAdmin ? "Super Admin Dashboard" : "Food Management Dashboard"}</h1><p className="mt-2 text-gray-500">{user.isSuperAdmin ? "Website records, team access and order management." : "Manage food, PKR prices and stock."}</p></div><div className="flex gap-3"><Link className={btn} to="/food-management">Manage food items</Link>{user.isSuperAdmin && <button className={btn} disabled={loading} onClick={load}>Refresh records</button>}</div></header>
+  {!user.isSuperAdmin ? <section className="rounded-2xl border p-8"><h2 className="text-xl font-bold">Your menu workspace</h2><p className="my-4">Add food with images, edit prices and categories, and update stock. The Super Admin manages account permissions.</p><Link className={btn} to="/food-management">Open inventory</Link></section> : <>
+  {error && <p role="alert" className="mb-4 rounded-xl bg-red-50 p-4 text-red-700">{error}</p>}
+  <section className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-5">{[["Users",data?.users?.length],["Products",data?.products?.length],["Orders",data?.orders?.length],["Reservations",data?.reservations?.length],["Paid revenue",data ? money(data.revenue) : null]].map(([label,value]) => <div key={label} className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-900"><p className="text-sm text-gray-500">{label}</p><p className="mt-2 break-words text-2xl font-bold">{value ?? "—"}</p></div>)}</section>
+  <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"><div className="flex flex-wrap justify-between gap-4 border-b p-4 dark:border-gray-700"><nav className="flex flex-wrap gap-2" aria-label="Website records">{["users","products","orders","reservations"].map(t => <button key={t} aria-pressed={tab===t} onClick={()=>{setTab(t);setQuery("");}} className={`rounded-lg px-4 py-2 capitalize ${tab===t ? "bg-orange-600 text-white" : "bg-gray-100 dark:bg-gray-800"}`}>{t}</button>)}</nav><input aria-label="Search records" placeholder="Search records…" className="rounded-lg border bg-transparent px-3 py-2" value={query} onChange={e=>setQuery(e.target.value)} /></div>
+  {loading && <p role="status" className="p-4">Loading latest records…</p>}
+  <div className="overflow-x-auto"><table className="w-full min-w-[700px]"><thead><tr>{headers.map(h=><th key={h} className="px-4 py-3 text-left text-xs uppercase tracking-wide text-gray-500">{h}</th>)}</tr></thead><tbody className="divide-y dark:divide-gray-700">{rows.map(r=><tr key={r._id}>
+  {tab==="users" && <><td className={cell}><strong>{r.name}</strong><p>{r.email}</p></td><td className={cell}>{r.isSuperAdmin ? "Super Admin" : r.isAdmin ? "Admin" : "Customer"}</td><td className={cell}>{r.status}</td><td className={cell}>{date(r.createdAt)}<p>Last login: {date(r.lastLogin)}</p></td><td className={cell}>{r.isSuperAdmin ? "Protected owner account" : <div className="flex flex-wrap gap-2"><button className={btn} disabled={busy} onClick={()=>{if(window.confirm(`${r.isAdmin ? "Remove" : "Grant"} admin access for ${r.email}?`)) change(`/admin/users/${r._id}`,{isAdmin:!r.isAdmin});}}>{r.isAdmin ? "Remove admin" : "Grant admin"}</button><button className="rounded-lg border px-3 py-2" disabled={busy} onClick={()=>change(`/admin/users/${r._id}/status`,{status:r.status==="Blocked" ? "Active" : "Blocked"})}>{r.status==="Blocked" ? "Unblock" : "Block"}</button></div>}</td></>}
+  {tab==="products" && <><td className={cell}><strong>{r.name}</strong></td><td className={cell}>{r.category}</td><td className={cell}>{money(r.price)}</td><td className={cell}>{r.stock}</td><td className={cell}><Link className="text-orange-600 underline" to="/food-management">Edit inventory</Link></td></>}
+  {tab==="orders" && <><td className={cell}>#{r._id.slice(-8)}<p>{r.user?.name || "Deleted account"}</p><p>{r.user?.email}</p><p>{date(r.createdAt)}</p></td><td className={cell}>{r.items.map((i,k)=><p key={k}>{i.name} × {i.quantity} — {money(i.price)}</p>)}</td><td className={cell}>{money(r.totalAmount)}<p>{r.paymentStatus}</p></td><td className={cell}>{r.deliveryAddress?.fullName}<p>{r.deliveryAddress?.mobileNumber}</p><p>{[r.deliveryAddress?.roomNumber,r.deliveryAddress?.street,r.deliveryAddress?.city,r.deliveryAddress?.state,r.deliveryAddress?.pincode].filter(Boolean).join(", ")}</p></td><td className={cell}><select aria-label={`Order status ${r._id}`} className="rounded-lg border bg-white p-2 dark:bg-gray-800" disabled={busy} value={r.orderStatus} onChange={e=>change(`/admin/orders/${r._id}`,{orderStatus:e.target.value},"patch")}>{statuses.map(s=><option key={s}>{s}</option>)}</select></td></>}
+  {tab==="reservations" && <><td className={cell}>{r.bookingReference}<p>{r.fullName}</p></td><td className={cell}>{r.email}<p>{r.phone}</p></td><td className={cell}>{r.date}<p>{r.timeSlot}</p></td><td className={cell}>{r.guests} guests<p>{r.diningArea}</p></td><td className={cell}>{r.status}</td></>}
+  </tr>)}</tbody></table></div>{!loading && !rows.length && <p className="p-10 text-center text-gray-500">No {tab} {query ? "match your search" : "yet"}.</p>}</section>
+  <p className="mt-4 text-sm text-gray-500">All amounts in PKR. Paid revenue excludes cancelled orders. Only Super Admins can grant or revoke admin access.</p><Link className="mt-4 inline-block text-orange-600 underline" to="/users">Advanced user management</Link>
+  </>}
+ </main>;
 }

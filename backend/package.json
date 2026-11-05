@@ -4,6 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "superadmin": "node scripts/set-super-admin.js",
     "dev": "node --watch index.js",
     "start": "node index.js"
   },

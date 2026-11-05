@@ -303,10 +303,10 @@ export default function Hero() {
 
                   <div className="text-right shrink-0">
                     <p className="text-base sm:text-lg font-extrabold text-neutral-900 dark:text-white">
-                      ₹{CHEF_SPECIAL.price}
+                      PKR {CHEF_SPECIAL.price}
                     </p>
                     <p className="text-xs text-neutral-400 line-through">
-                      ₹{CHEF_SPECIAL.originalPrice}
+                      PKR {CHEF_SPECIAL.originalPrice}
                     </p>
                   </div>
                 </div>
@@ -328,7 +328,7 @@ export default function Hero() {
                     ) : (
                       <>
                         <ShoppingBag className="w-4 h-4" />
-                        <span>Order Now • ₹{CHEF_SPECIAL.price}</span>
+                        <span>Order Now • PKR {CHEF_SPECIAL.price}</span>
                       </>
                     )}
                   </button>

@@ -754,7 +754,7 @@ const BookTablePage = () => {
 
                   <div className="flex items-center justify-between pt-2.5 text-xs font-bold">
                     <span>Booking Deposit</span>
-                    <span className="text-emerald-500">₹0 (Free)</span>
+                    <span className="text-emerald-500">PKR 0 (Free)</span>
                   </div>
                 </div>
 

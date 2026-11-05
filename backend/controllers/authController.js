@@ -26,6 +26,7 @@ const sendTokenResponse = (res, user, message) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      isSuperAdmin: user.isSuperAdmin,
       address: user.address || null,
       avatar: user.avatar || "/uploads/avatars/default-avatar.png",
     },
@@ -70,7 +71,7 @@ const sendTokenResponse = (res, user, message) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log( email,password);
+    
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password required" });
     }
@@ -80,7 +81,6 @@ export const loginUser = async (req, res) => {
       email: email.toLowerCase(),
     }).select("+password");
 
-    console.log("User found:", user);
 
     // check user + password
     if (!user || !(await user.matchPassword(password))) {
@@ -163,7 +163,7 @@ export const getUserProfile = async (req, res) => {
     });
 
     const user = await User.findById(req.user.id)
-      .select("_id name email isAdmin address avatar lastActive lastLogin isOnline");
+      .select("_id name email isAdmin isSuperAdmin address avatar lastActive lastLogin isOnline");
 
     res.json({
       success: true,
@@ -189,7 +189,7 @@ export const updateUserProfile = async (req, res) => {
       req.user.id,
       updateData,
       { new: true }
-    ).select("_id name email isAdmin address avatar mobile");
+    ).select("_id name email isAdmin isSuperAdmin address avatar mobile");
 
     res.json({
       success: true,

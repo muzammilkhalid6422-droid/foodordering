@@ -89,7 +89,7 @@ const ManageUser = () => {
 
   // Initial fetch and auto-refresh every 30 seconds
   useEffect(() => {
-    if (user?.isAdmin) {
+    if (user?.isSuperAdmin) {
       fetchAllUsers();
       const interval = setInterval(() => {
         fetchAllUsers(false); // silent update
@@ -313,7 +313,7 @@ const ManageUser = () => {
     document.body.removeChild(link);
   };
 
-  if (!user?.isAdmin) {
+  if (!user?.isSuperAdmin) {
     return (
       <div className="flex justify-center items-center h-[70vh] text-red-500 text-lg font-semibold">
         🚫 You are not authorized to view this page.

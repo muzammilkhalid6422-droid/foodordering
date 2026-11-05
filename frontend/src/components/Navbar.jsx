@@ -545,7 +545,7 @@ const Navbar = () => {
                         </div>
                         {cartCount > 0 ? (
                           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary-light dark:bg-primary-dark text-white">
-                            {cartCount} • ₹{cartSubtotal}
+                            {cartCount} • PKR {cartSubtotal}
                           </span>
                         ) : (
                           <span className="text-[11px] text-gray-400">Empty</span>

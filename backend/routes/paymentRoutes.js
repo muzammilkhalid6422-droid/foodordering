@@ -12,11 +12,11 @@ router.post("/create-payment-intent", async (req, res) => {
   if (!stripe) {
     return res.status(503).json({ error: "Payments are not configured. Set STRIPE_SECRET_KEY to enable payments." });
   }
-  const { amount } = req.body; // The total amount (in cents, i.e., ₹100 = 10000)
+  const { amount } = req.body; // The total amount (in cents, i.e., PKR 100 = 10000)
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
-      currency: "inr", // Use INR (Indian Rupee)
+      currency: "pkr", // Use PKR (Pakistani Rupee)
     });
 
     res.json({

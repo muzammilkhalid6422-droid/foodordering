@@ -209,7 +209,7 @@ const TrackOrderPage = () => {
                 </span>
               </div>
               <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
-                Placed on {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                Placed on {new Date(order.createdAt).toLocaleDateString("en-PK", {
                   day: "numeric",
                   month: "short",
                   year: "numeric",
@@ -420,11 +420,11 @@ const TrackOrderPage = () => {
                       {item.name || item.foodId?.name}
                     </p>
                     <p className="text-[11px] text-neutral-400">
-                      Qty: {item.quantity} × ₹{item.price || item.foodId?.price}
+                      Qty: {item.quantity} × PKR {item.price || item.foodId?.price}
                     </p>
                   </div>
                   <span className="font-bold text-neutral-900 dark:text-white shrink-0">
-                    ₹{((item.price || item.foodId?.price || 0) * item.quantity).toLocaleString("en-IN")}
+                    PKR {((item.price || item.foodId?.price || 0) * item.quantity).toLocaleString("en-PK")}
                   </span>
                 </div>
               ))}
@@ -434,24 +434,24 @@ const TrackOrderPage = () => {
             <div className="pt-3 border-t border-neutral-100 dark:border-neutral-850 space-y-1.5 text-xs">
               <div className="flex justify-between text-neutral-500 dark:text-neutral-400">
                 <span>Item Total</span>
-                <span>₹{(order.cartTotal || 0).toLocaleString("en-IN")}</span>
+                <span>PKR {(order.cartTotal || 0).toLocaleString("en-PK")}</span>
               </div>
 
               <div className="flex justify-between text-neutral-500 dark:text-neutral-400">
                 <span>Delivery Fee</span>
-                <span>₹{order.deliveryFee !== undefined ? order.deliveryFee : 40}</span>
+                <span>PKR {order.deliveryFee !== undefined ? order.deliveryFee : 40}</span>
               </div>
 
               {order.discount > 0 && (
                 <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
                   <span>Coupon Discount</span>
-                  <span>-₹{order.discount.toLocaleString("en-IN")}</span>
+                  <span>-PKR {order.discount.toLocaleString("en-PK")}</span>
                 </div>
               )}
 
               <div className="flex justify-between pt-2 border-t border-neutral-100 dark:border-neutral-850 text-sm font-bold text-neutral-900 dark:text-white">
                 <span>Total Amount</span>
-                <span>₹{(order.totalAmount || 0).toLocaleString("en-IN")}</span>
+                <span>PKR {(order.totalAmount || 0).toLocaleString("en-PK")}</span>
               </div>
 
               <div className="pt-2 flex items-center justify-between text-[11px] text-neutral-400">

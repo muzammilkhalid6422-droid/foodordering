@@ -19,8 +19,13 @@ import {
   deleteUser,
 } from "../controllers/adminController.js";
 import { protect } from "../middleware/authMiddleware.js";
+import { requireSuperAdmin } from "../middleware/roles.js";
+import { overview, updateOrderStatus } from "../controllers/overviewController.js";
 
 const router = express.Router();
+router.use(protect, requireSuperAdmin);
+router.get("/overview", overview);
+router.patch("/orders/:id", updateOrderStatus);
 
 //  All admin routes are protected
 router.get("/users", protect, getAllUsers);            // GET /api/admin/users

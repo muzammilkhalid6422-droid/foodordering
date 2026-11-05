@@ -528,10 +528,10 @@ export default function Hero() {
                     <div className="mt-3 pt-2.5 border-t border-neutral-200 dark:border-white/[0.08] flex items-center justify-between gap-2 relative">
                       <div className="flex items-baseline gap-1.5">
                         <span className="text-lg sm:text-xl font-black text-neutral-950 dark:text-white">
-                          ₹{currentDish.price}
+                          PKR {currentDish.price}
                         </span>
                         <span className="text-[11px] text-neutral-400/80 line-through">
-                          ₹{currentDish.originalPrice}
+                          PKR {currentDish.originalPrice}
                         </span>
                       </div>
 

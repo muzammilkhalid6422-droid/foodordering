@@ -5,7 +5,7 @@ import {
   X,
   Sparkles,
   Layers,
-  IndianRupee,
+  Banknote,
   Star,
   Package,
   Utensils,
@@ -175,8 +175,8 @@ const FoodModal = ({
             <div className="grid grid-cols-2 gap-3.5">
               <div>
                 <label className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-300 mb-1.5">
-                  <IndianRupee className="w-3.5 h-3.5 text-orange-500" />
-                  <span>Price (₹) *</span>
+                  <Banknote className="w-3.5 h-3.5 text-orange-500" />
+                  <span>Price (PKR ) *</span>
                 </label>
                 <input
                   type="number"

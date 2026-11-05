@@ -138,10 +138,10 @@ const FoodItemCard = ({
           <div className="min-w-0">
             <div className="flex items-baseline gap-1">
               <span className="text-sm sm:text-lg font-black text-neutral-900 dark:text-white">
-                ₹{item.price}
+                PKR {item.price}
               </span>
               <span className="text-[10px] sm:text-[11px] text-neutral-400 line-through truncate">
-                ₹{originalPrice}
+                PKR {originalPrice}
               </span>
             </div>
             <span className="text-[8px] sm:text-[9px] font-bold text-emerald-600 dark:text-emerald-400 block truncate">

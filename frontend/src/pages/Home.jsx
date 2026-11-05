@@ -768,10 +768,10 @@ function FeaturedSignatureMenu() {
                         <div className="min-w-0">
                           <div className="flex items-baseline gap-1">
                             <span className="text-sm sm:text-lg font-black text-neutral-900 dark:text-white">
-                              ₹{dish.price}
+                              PKR {dish.price}
                             </span>
                             <span className="text-[10px] sm:text-[11px] text-neutral-400 line-through truncate">
-                              ₹{dish.originalPrice}
+                              PKR {dish.originalPrice}
                             </span>
                           </div>
                           <span className="text-[8px] sm:text-[9px] font-bold text-emerald-600 dark:text-emerald-400 block truncate">
@@ -1194,7 +1194,7 @@ function DiningClub() {
   const handleCopyCode = () => {
     navigator.clipboard.writeText('YUMIGO150');
     setCopied(true);
-    toast.success('Coupon YUMIGO150 copied! Use at checkout for ₹150 OFF.', {
+    toast.success('Coupon YUMIGO150 copied! Use at checkout for PKR 150 OFF.', {
       icon: '🎉',
     });
     setTimeout(() => setCopied(false), 2500);

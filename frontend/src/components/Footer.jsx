@@ -41,7 +41,7 @@ const Footer = () => {
       showToast("Please enter a valid email", "error");
       return;
     }
-    showToast("🎉 Thank you! ₹150 coupon sent to your inbox.", "success");
+    showToast("🎉 Thank you! PKR 150 coupon sent to your inbox.", "success");
     setNewsletterEmail("");
   };
 
@@ -266,7 +266,7 @@ const Footer = () => {
           <div className="lg:col-span-4 space-y-4">
             <div>
               <h3 className="text-sm font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                Get ₹150 Off Your Order
+                Get PKR 150 Off Your Order
               </h3>
               <p className="mt-1.5 text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
                 Join our VIP dining club for exclusive chef specials, festival

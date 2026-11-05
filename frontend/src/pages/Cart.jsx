@@ -32,15 +32,15 @@ import { useAuth } from "../context/AuthContext";
 const AVAILABLE_COUPONS = [
   {
     code: "ANKIT100",
-    discountText: "₹100 OFF",
+    discountText: "PKR 100 OFF",
     minOrder: 500,
-    desc: "Valid on orders above ₹500",
+    desc: "Valid on orders above PKR 500",
   },
   {
     code: "YUMIGO50",
-    discountText: "₹50 OFF",
+    discountText: "PKR 50 OFF",
     minOrder: 200,
-    desc: "Valid on orders above ₹200",
+    desc: "Valid on orders above PKR 200",
   },
 ];
 
@@ -226,7 +226,7 @@ const Cart = () => {
         setDiscount(data.discount);
         setAppliedCoupon(data.appliedCoupon || targetCode);
         setCoupon(targetCode);
-        showToast(data.message || `Saved ₹${data.discount}!`, "success");
+        showToast(data.message || `Saved PKR ${data.discount}!`, "success");
       } else {
         showToast(data.message || "Could not apply coupon", "error");
       }
@@ -384,7 +384,7 @@ const Cart = () => {
                       Items In Your Bag
                     </span>
                     <span className="text-xs text-gray-500 dark:text-neutral-400">
-                      Prices in INR (₹)
+                      Prices in PKR
                     </span>
                   </div>
 
@@ -427,7 +427,7 @@ const Cart = () => {
                               {food.name}
                             </h3>
                             <p className="text-xs text-gray-500 dark:text-neutral-400">
-                              ₹{(Number(food.price) || 0).toLocaleString("en-IN")}{" "}
+                              PKR {(Number(food.price) || 0).toLocaleString("en-PK")}{" "}
                               <span className="text-[11px] text-gray-400">/ item</span>
                             </p>
                           </div>
@@ -487,7 +487,7 @@ const Cart = () => {
                           {/* Item Subtotal */}
                           <div className="text-right min-w-[70px]">
                             <span className="font-bold text-sm sm:text-base text-gray-900 dark:text-white">
-                              ₹{itemTotal.toLocaleString("en-IN")}
+                              PKR {itemTotal.toLocaleString("en-PK")}
                             </span>
                           </div>
 
@@ -652,7 +652,7 @@ const Cart = () => {
                     <div className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs">
                       <CheckCircle2 size={15} className="shrink-0" />
                       <span className="font-medium">
-                        "{appliedCoupon}" applied! You saved ₹{discount}.
+                        "{appliedCoupon}" applied! You saved PKR {discount}.
                       </span>
                     </div>
                   )}
@@ -709,7 +709,7 @@ const Cart = () => {
                     <div className="flex items-center justify-between text-gray-600 dark:text-neutral-400">
                       <span>Item Subtotal</span>
                       <span className="font-semibold text-gray-900 dark:text-white">
-                        ₹{totalPrice.toLocaleString("en-IN")}
+                        PKR {totalPrice.toLocaleString("en-PK")}
                       </span>
                     </div>
 
@@ -718,14 +718,14 @@ const Cart = () => {
                         <span>Standard Delivery Fee</span>
                       </span>
                       <span className="font-semibold text-gray-900 dark:text-white">
-                        ₹{deliveryFee}
+                        PKR {deliveryFee}
                       </span>
                     </div>
 
                     {discount > 0 && (
                       <div className="flex items-center justify-between text-emerald-600 dark:text-emerald-400 font-medium">
                         <span>Coupon Discount</span>
-                        <span>-₹{discount.toLocaleString("en-IN")}</span>
+                        <span>-PKR {discount.toLocaleString("en-PK")}</span>
                       </div>
                     )}
 
@@ -746,7 +746,7 @@ const Cart = () => {
                         </span>
                       </div>
                       <span className="text-lg sm:text-xl font-black text-primary-light dark:text-primary-dark">
-                        ₹{finalTotal.toLocaleString("en-IN")}
+                        PKR {finalTotal.toLocaleString("en-PK")}
                       </span>
                     </div>
                   </div>

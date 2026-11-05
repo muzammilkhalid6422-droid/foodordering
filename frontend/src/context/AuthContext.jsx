@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }) => {
       name: userData.name,
       email: userData.email,
       isAdmin: userData.isAdmin,
+      isSuperAdmin: userData.isSuperAdmin,
       address: userData.address || null,
       avatar: userData.avatar || defaultUserLogo,
     };

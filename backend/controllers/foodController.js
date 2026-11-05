@@ -1,6 +1,9 @@
 import FoodItem from "../models/FoodItem.js";
 import cloudinary from "../config/cloudinary.js";
 
+const imageUrl = file => file.path.startsWith("http") ? file.path : `${process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5000}`}/uploads/food/${file.filename}`;
+const publicId = file => file.path.startsWith("http") ? file.filename : undefined;
+
 /* ===================================================
    GET ALL FOOD ITEMS
 =================================================== */
@@ -63,8 +66,8 @@ export const addFoodItem = async (req, res) => {
       rating,
       category,
       stock: stock !== undefined && stock !== "" ? Number(stock) : 10,
-      image: req.file.path, // ✅ Cloudinary URL
-      imagePublicId: req.file.filename, // needed for delete/update
+      image: imageUrl(req.file), // ✅ Cloudinary URL
+      imagePublicId: publicId(req.file), // needed for delete/update
     });
 
     res.status(201).json({
@@ -106,8 +109,8 @@ export const updateFoodItem = async (req, res) => {
         await cloudinary.uploader.destroy(food.imagePublicId);
       }
 
-      food.image = req.file.path;
-      food.imagePublicId = req.file.filename;
+      food.image = imageUrl(req.file);
+      food.imagePublicId = publicId(req.file);
     }
 
     // update fields

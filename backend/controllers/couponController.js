@@ -49,7 +49,7 @@ export const applyCoupon = async (req, res) => {
 
     if (cartTotal < coupon.minOrderValue) {
       return res.status(400).json({
-        message: `Minimum order value should be ₹${coupon.minOrderValue} to use this coupon.`,
+        message: `Minimum order value should be PKR ${coupon.minOrderValue} to use this coupon.`,
       });
     }
 

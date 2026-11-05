@@ -8,6 +8,7 @@ import { SearchProvider } from "./context/SearchContext";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
+import SuperAdminRoute from "./components/SuperAdminRoute";
 import ScrollToTop from "./components/ScrollToTop";
 
 import Home from "./pages/Home";
@@ -123,9 +124,9 @@ const App = () => {
               path="users"
               element={
                 <ProtectedRoute>
-                  <AdminRoute>
+                  <SuperAdminRoute>
                     <ManageUser />
-                  </AdminRoute>
+                  </SuperAdminRoute>
                 </ProtectedRoute>
               }
             />

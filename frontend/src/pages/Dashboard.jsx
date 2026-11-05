@@ -205,7 +205,7 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="mt-3 text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">
-              ₹<CountUp end={totalSpent} duration={1.2} separator="," />
+              PKR <CountUp end={totalSpent} duration={1.2} separator="," />
             </div>
             <p className="text-[11px] text-gray-400 dark:text-neutral-500 mt-1">
               Spent across all meals
@@ -397,7 +397,7 @@ const Dashboard = () => {
                         Order #{orders.length - idx}
                       </span>
                       <p className="text-[11px] text-gray-500 dark:text-neutral-400 mt-0.5">
-                        {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                        {new Date(order.createdAt).toLocaleDateString("en-PK", {
                           day: "numeric",
                           month: "short",
                           year: "numeric",
@@ -429,7 +429,7 @@ const Dashboard = () => {
                     <div>
                       <span className="text-[10px] text-gray-400 uppercase font-medium block">Total</span>
                       <span className="text-base font-bold text-primary-light dark:text-primary-dark">
-                        ₹{Number(order.totalAmount).toLocaleString("en-IN")}
+                        PKR {Number(order.totalAmount).toLocaleString("en-PK")}
                       </span>
                     </div>
 

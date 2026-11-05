@@ -75,7 +75,7 @@ export const placeOrder = async (req, res) => {
 
       if (coupon.minOrderValue && cartTotal < coupon.minOrderValue) {
         return res.status(400).json({
-          message: `Minimum order ₹${coupon.minOrderValue} required`
+          message: `Minimum order PKR ${coupon.minOrderValue} required`
         });
       }
 

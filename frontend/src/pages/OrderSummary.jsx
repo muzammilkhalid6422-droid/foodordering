@@ -154,7 +154,7 @@ const OrderSummary = () => {
                       <p className="text-xs text-gray-500 dark:text-neutral-400 flex items-center gap-1.5">
                         <Calendar size={12} />
                         <span>
-                          {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                          {new Date(order.createdAt).toLocaleDateString("en-PK", {
                             day: "numeric",
                             month: "short",
                             year: "numeric",
@@ -205,13 +205,13 @@ const OrderSummary = () => {
                                   {item.name || item.foodId?.name}
                                 </span>
                                 <span className="text-[11px] text-gray-500 dark:text-neutral-400">
-                                  Qty: {item.quantity} × ₹{item.price || item.foodId?.price}
+                                  Qty: {item.quantity} × PKR {item.price || item.foodId?.price}
                                 </span>
                               </div>
                             </div>
 
                             <span className="font-bold text-gray-900 dark:text-white shrink-0">
-                              ₹{((item.price || item.foodId?.price || 0) * item.quantity).toLocaleString("en-IN")}
+                              PKR {((item.price || item.foodId?.price || 0) * item.quantity).toLocaleString("en-PK")}
                             </span>
                           </div>
                         ))}
@@ -253,14 +253,14 @@ const OrderSummary = () => {
                       <div className="flex items-center justify-between text-gray-600 dark:text-neutral-400">
                         <span>Items Subtotal</span>
                         <span className="font-medium text-gray-900 dark:text-white">
-                          ₹{order.cartTotal?.toLocaleString("en-IN")}
+                          PKR {order.cartTotal?.toLocaleString("en-PK")}
                         </span>
                       </div>
 
                       <div className="flex items-center justify-between text-gray-600 dark:text-neutral-400">
                         <span>Delivery Fee</span>
                         <span className="font-medium text-gray-900 dark:text-white">
-                          ₹{order.deliveryFee || 40}
+                          PKR {order.deliveryFee || 40}
                         </span>
                       </div>
 
@@ -269,7 +269,7 @@ const OrderSummary = () => {
                           <span>
                             Coupon {order.appliedCoupon?.code ? `(${order.appliedCoupon.code})` : ""}
                           </span>
-                          <span>-₹{order.discount?.toLocaleString("en-IN")}</span>
+                          <span>-PKR {order.discount?.toLocaleString("en-PK")}</span>
                         </div>
                       )}
 
@@ -283,7 +283,7 @@ const OrderSummary = () => {
                           </span>
                         </div>
                         <span className="text-base font-black text-primary-light dark:text-primary-dark">
-                          ₹{order.totalAmount?.toLocaleString("en-IN")}
+                          PKR {order.totalAmount?.toLocaleString("en-PK")}
                         </span>
                       </div>
                     </div>

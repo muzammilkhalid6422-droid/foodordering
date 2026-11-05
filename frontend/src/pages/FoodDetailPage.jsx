@@ -392,10 +392,10 @@ export default function FoodDetailPage() {
               <div className="mt-3 flex items-center justify-between gap-2.5">
                 <div className="flex items-baseline gap-2.5">
                   <span className="text-3xl font-black text-neutral-950 dark:text-white">
-                    ₹{foodItem.price}
+                    PKR {foodItem.price}
                   </span>
                   <span className="text-sm text-neutral-400 line-through">
-                    ₹{originalPrice}
+                    PKR {originalPrice}
                   </span>
                   <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                     {discountPercent}% OFF
@@ -443,7 +443,7 @@ export default function FoodDetailPage() {
                 Portion Size
               </label>
               <div className="grid grid-cols-3 gap-2.5">
-                {["Regular", "Family (+₹120)", "Party (+₹240)"].map((size) => (
+                {["Regular", "Family (+PKR 120)", "Party (+PKR 240)"].map((size) => (
                   <button
                     key={size}
                     type="button"
@@ -520,7 +520,7 @@ export default function FoodDetailPage() {
                     <>
                       <ShoppingBag className="w-4 h-4" />
                       <span>
-                        {inCartQuantity > 0 ? "Add More to Order" : `Add to Order • ₹${foodItem.price * quantity}`}
+                        {inCartQuantity > 0 ? "Add More to Order" : `Add to Order • PKR ${foodItem.price * quantity}`}
                       </span>
                     </>
                   )}
@@ -630,7 +630,7 @@ export default function FoodDetailPage() {
 
                     <div className="mt-2 pt-2 border-t border-neutral-100 dark:border-neutral-800/80 flex items-center justify-between">
                       <span className="text-xs sm:text-sm font-black text-neutral-900 dark:text-white">
-                        ₹{item.price}
+                        PKR {item.price}
                       </span>
 
                       <span className="text-[11px] font-bold text-orange-600 dark:text-orange-400 group-hover:translate-x-0.5 transition-transform flex items-center">

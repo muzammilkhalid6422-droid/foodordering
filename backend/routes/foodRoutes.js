@@ -10,13 +10,15 @@ import {
 import { uploadFoodImage } from "../middleware/uploadFoodImage.js";
 import FoodItem from "../models/FoodItem.js"; // ✅ Needed for fix-rating
 
+import { protect } from "../middleware/authMiddleware.js";
+import { requireAdmin } from "../middleware/roles.js";
 const router = express.Router();
 
 /* ================= GET ALL ================= */
 router.get("/", getAllFoodItems);
 
 /* ================= FIX RATING (UTILITY ROUTE) ================= */
-router.get("/fix-rating", async (req, res) => {
+router.get("/fix-rating", protect, requireAdmin, async (req, res) => {
   try {
     const result = await FoodItem.updateMany(
       { rating: { $exists: false } },
@@ -33,7 +35,7 @@ router.get("/fix-rating", async (req, res) => {
 });
 
 /* ================= INIT STOCK (DEFAULT 10 FOR EXISTING ITEMS) ================= */
-router.get("/init-stock", async (req, res) => {
+router.get("/init-stock", protect, requireAdmin, async (req, res) => {
   try {
     const result = await FoodItem.updateMany(
       { $or: [{ stock: { $exists: false } }, { stock: null }] },
@@ -56,18 +58,18 @@ router.get("/:id", getFoodItemById);
 /* ================= ADD FOOD ================= */
 router.post(
   "/",
-  uploadFoodImage.single("image"), // Cloudinary upload
+  protect, requireAdmin, uploadFoodImage.single("image"), // Cloudinary upload
   addFoodItem
 );
 
 /* ================= UPDATE FOOD ================= */
 router.put(
   "/:id",
-  uploadFoodImage.single("image"), // optional new image
+  protect, requireAdmin, uploadFoodImage.single("image"), // optional new image
   updateFoodItem
 );
 
 /* ================= DELETE FOOD ================= */
-router.delete("/:id", deleteFoodItem);
+router.delete("/:id", protect, requireAdmin, deleteFoodItem);
 
 export default router;

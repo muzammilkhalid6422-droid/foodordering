@@ -282,7 +282,7 @@ const WishlistPage = () => {
                             Price
                           </span>
                           <span className="text-lg font-black text-orange-600 dark:text-orange-400">
-                            ₹{Number(dish.price).toLocaleString("en-IN")}
+                            PKR {Number(dish.price).toLocaleString("en-PK")}
                           </span>
                         </div>
 

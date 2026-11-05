@@ -543,13 +543,13 @@ const CheckoutForm = () => {
                             {item.foodId?.name}
                           </p>
                           <p className="text-[11px] text-gray-500 dark:text-neutral-400">
-                            Qty: {item.quantity} × ₹{item.foodId?.price}
+                            Qty: {item.quantity} × PKR {item.foodId?.price}
                           </p>
                         </div>
                       </div>
 
                       <span className="text-xs font-bold text-gray-900 dark:text-white shrink-0">
-                        ₹{(item.foodId?.price * item.quantity).toLocaleString("en-IN")}
+                        PKR {(item.foodId?.price * item.quantity).toLocaleString("en-PK")}
                       </span>
                     </div>
                   ))}
@@ -583,14 +583,14 @@ const CheckoutForm = () => {
                   <div className="flex items-center justify-between text-gray-600 dark:text-neutral-400">
                     <span>Items Subtotal</span>
                     <span className="font-semibold text-gray-900 dark:text-white">
-                      ₹{subtotal.toLocaleString("en-IN")}
+                      PKR {subtotal.toLocaleString("en-PK")}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between text-gray-600 dark:text-neutral-400">
                     <span>Delivery Partner Fee</span>
                     <span className="font-semibold text-gray-900 dark:text-white">
-                      ₹{deliveryFee}
+                      PKR {deliveryFee}
                     </span>
                   </div>
 
@@ -599,7 +599,7 @@ const CheckoutForm = () => {
                       <span>
                         Coupon {appliedCoupon ? `(${appliedCoupon})` : ""}
                       </span>
-                      <span>-₹{discount.toLocaleString("en-IN")}</span>
+                      <span>-PKR {discount.toLocaleString("en-PK")}</span>
                     </div>
                   )}
 
@@ -620,7 +620,7 @@ const CheckoutForm = () => {
                       </span>
                     </div>
                     <span className="text-xl sm:text-2xl font-black text-primary-light dark:text-primary-dark">
-                      ₹{finalTotal.toLocaleString("en-IN")}
+                      PKR {finalTotal.toLocaleString("en-PK")}
                     </span>
                   </div>
                 </div>
@@ -641,7 +641,7 @@ const CheckoutForm = () => {
                     ) : (
                       <>
                         <Lock size={15} />
-                        <span>Pay ₹{finalTotal.toLocaleString("en-IN")} & Place Order</span>
+                        <span>Pay PKR {finalTotal.toLocaleString("en-PK")} & Place Order</span>
                       </>
                     )}
                   </button>
